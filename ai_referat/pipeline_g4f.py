@@ -1,6 +1,5 @@
 # ai_referat/pipeline_g4f.py
 import asyncio
-from pprint import pprint as pp
 from typing import Optional
 
 from ai_referat.client_g4f import (AIClientAsync,  # твой новый g4f клиент
@@ -122,7 +121,6 @@ class AIReferatManagerAsync(_BaseReferatManager):
         prompt = self.prompts.plan()
         raw_plan = await self.client.get_response_async(prompt, rules="")
         plan = parse_plan(raw_plan)
-        pp(plan, indent=4)
         return plan
 
     async def generate_content(self, plan):
@@ -187,7 +185,6 @@ class AIReferatManagerSync(_BaseReferatManager):
         prompt = self.prompts.plan()
         raw_plan = self.client.get_response_sync(prompt, rules="", min_length=MIN_LENGTH, max_retries=MAX_RETRIES)
         plan = parse_plan(raw_plan)
-        pp(plan, indent=4)
         return plan
 
     def generate_content(self, plan):

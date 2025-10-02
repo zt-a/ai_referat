@@ -1,6 +1,5 @@
 # ai_referat/pipeline.py
 import asyncio
-from pprint import pprint as pp
 from typing import Optional
 
 from ai_referat.client import AIClientAsync, AIClientSync
@@ -129,7 +128,6 @@ class AIReferatManagerAsync(_BaseReferatManager):
         prompt = self.prompts.plan()
         raw_plan = await self.client.get_response_async(content=prompt, rules="", min_length=MIN_LENGTH, max_retries=MAX_RETRIES)
         plan = parse_plan(raw_plan)
-        pp(plan, indent=4)
         return plan
 
     async def generate_content(self, plan):
@@ -197,7 +195,6 @@ class AIReferatManagerSync(_BaseReferatManager):
         prompt = self.prompts.plan()
         raw_plan = self.client.get_response_sync(content=prompt, rules="", min_length=MIN_LENGTH, max_retries=MAX_RETRIES)
         plan = parse_plan(raw_plan)
-        pp(plan, indent=4)
         return plan
 
     def generate_content(self, plan):

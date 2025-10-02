@@ -1,0 +1,21 @@
+[project]
+name = "ai_referat"
+version = "0.1.0"
+description = "Генератор рефератов на основе AI"
+authors = [
+    { name = "Zhyrgalbek Tagaibekov", email = "zt20061113@gmail.com" }
+]
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+
+dependencies = [
+    "g4f",
+    "aiohttp",
+    "python-docx",
+    "python-dotenv"
+]
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
