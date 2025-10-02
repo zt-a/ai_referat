@@ -11,17 +11,26 @@ def main():
     json_path = os.path.join(RESULTS_JSON_DIR, f"referat_{topic}.json")
     docx_path = os.path.join(RESULTS_DOCX_DIR, f"referat_{topic}.docx")
 
-    manager = AIReferatManagerSync(
-        topic=topic,
-        author="Иван Иванов",
-        group="CS-22",
+    manager_sync = AIReferatManagerSync(
+        topic="Искусственный интеллект",
+        language="RU",
+        author="Иванов И.И.",
+        group="БФ-101",
         discipline="Информатика",
-        department="Кафедра информационных технологий",
-        checked_by="Доцент Петров П.П.",
+        department="Кафедра ИТ",
+        checked_by="Петров П.П.",
         year="2025",
         city="Бишкек",
-        json_path=json_path,
-        docx_path=docx_path,
+        max_chapters=5,
+        max_subchapters=5,
+        min_pages=10,
+        max_pages=20,
+        chars_per_page=1800,
+        json_path="essay.json",
+        docx_path="essay.docx",
+        api_key="твой_openai_api_key",
+        model="gpt-4",
+        base_url="https://api.openai.com/v1"
     )
 
     essay = manager.generate_essay()

@@ -1,16 +1,13 @@
-# main_async.py
+# main_async_g4f.py
 import asyncio
 import os
 import time
-from ai_referat.client import AIClientAsync
-from ai_referat.pipeline import AIReferatManagerAsync
-from ai_referat.config import RESULTS_JSON_DIR, RESULTS_DOCX_DIR
+from ai_referat.pipeline_g4f import AIReferatManagerAsync  # наш g4f менеджер
 from ai_referat.config import (
-    AI_API_KEY,
-    AI_BASE_URL,
-    AI_MODEL
+    RESULTS_JSON_DIR, 
+    RESULTS_DOCX_DIR,
+    
 )
-
 
 async def main():
     start_time = time.time()
@@ -19,8 +16,9 @@ async def main():
     json_path = os.path.join(RESULTS_JSON_DIR, f"referat_{topic}.json")
     docx_path = os.path.join(RESULTS_DOCX_DIR, f"referat_{topic}.docx")
 
+    # ---------------------- Настройка менеджера ----------------------
     manager = AIReferatManagerAsync(
-        topic="Искусственный интеллект",
+        topic=topic,
         language="RU",
         author="Иванов И.И.",
         group="БФ-101",
@@ -29,18 +27,20 @@ async def main():
         checked_by="Петров П.П.",
         year="2025",
         city="Бишкек",
-        max_chapters=5,
-        max_subchapters=5,
-        min_pages=10,
-        max_pages=20,
-        chars_per_page=1800,
-        json_path="essay.json",
-        docx_path="essay.docx",
-        api_key="твой_openai_api_key",
-        model="gpt-4",
-        base_url="https://api.openai.com/v1"
+        max_chapters=2,
+        max_subchapters=3,
+        min_pages=1,
+        max_pages=3,
+        chars_per_page=1000,
+        json_path=json_path,
+        docx_path=docx_path,
+        model="gpt-4o-mini",   # Модель g4f
+        api_key=None,          # Если free режим
+        base_url=None,         # Если free режим
+        free=True              # Используем бесплатные провайдеры g4f
     )
 
+    # ---------------------- Генерация эссе ----------------------
     essay = await manager.generate_essay()
 
     end_time = time.time()

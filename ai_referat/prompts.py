@@ -33,7 +33,7 @@ class EssayPrompts:
 
 {self.rules}
 
-Ответ — только сам план в указанном формате, без комментариев и пояснений.
+Ответ — только сам план в указанном формате, без комментариев и пояснений, только название глав подглав.
 """
 
     def intro(self) -> str:
@@ -41,9 +41,6 @@ class EssayPrompts:
 Напиши раздел "Введение" для реферата на тему "{self.topic}" на {self.language}.
 
 {self.rules}
-
-Объем текста: примерно {self.min_pages}–{self.max_pages} страниц
-(≈ {self.min_pages * self.chars_per_page}–{self.max_pages * self.chars_per_page} символов с пробелами).
 """
 
     def chapter(self, chapter_title: str) -> str:
@@ -51,9 +48,6 @@ class EssayPrompts:
 Напиши раздел по теме "{chapter_title}" для реферата на тему "{self.topic}" на {self.language}.
 
 {self.rules}
-
-Объем текста: примерно {self.min_pages}–{self.max_pages} страниц
-(≈ {self.min_pages * self.chars_per_page}–{self.max_pages * self.chars_per_page} символов с пробелами).
 """
 
     def subchapter(self, chapter_title: str, subchapter_title: str) -> str:
@@ -62,19 +56,15 @@ class EssayPrompts:
 для реферата на тему "{self.topic}" на {self.language}.
 
 {self.rules}
-
-Объем текста: примерно {self.min_pages}–{self.max_pages} страниц
-(≈ {self.min_pages * self.chars_per_page}–{self.max_pages * self.chars_per_page} символов с пробелами).
 """
+#Не надо записывать номер название главы и подглавы - только контент текст.  
+#"""
 
     def conclusion(self) -> str:
         return f"""
 Составь заключение для реферата на тему "{self.topic}" на {self.language}.
 
 {self.rules}
-
-Объем текста: примерно {self.min_pages}–{self.max_pages} страниц
-(≈ {self.min_pages * self.chars_per_page}–{self.max_pages * self.chars_per_page} символов с пробелами).
 """
 
     def references(self) -> str:
@@ -86,9 +76,6 @@ class EssayPrompts:
 Выведи список из 5–8 источников в академическом стиле:
 1. Автор. Название. Год.
 2. ...
-
-Объем текста: примерно {self.min_pages}–{self.max_pages} страниц
-(≈ {self.min_pages * self.chars_per_page}–{self.max_pages * self.chars_per_page} символов с пробелами).
 """
 
 

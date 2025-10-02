@@ -2,9 +2,9 @@ class RulesManager:
     def __init__(
         self,
         language: str = "русский",
-        min_pages: int = 2,
-        max_pages: int = 5,
-        chars_per_page: int = 2000,
+        min_pages: int = 1,
+        max_pages: int = 3,
+        chars_per_page: int = 1000,
         description: str = None
     ):
         self.language = language

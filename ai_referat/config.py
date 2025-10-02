@@ -12,6 +12,9 @@ MAX_PAGES = int(os.getenv("MAX_PAGES", 5))
 MAX_CHAPTERS = int(os.getenv("MAX_CHAPTERS", 3))
 MAX_SUBCHAPTERS = int(os.getenv("MAX_SUBCHAPTERS", 2))
 MAX_CHARS_PER_PAGE = int(os.getenv("MAX_CHARS_PER_PAGE", 1800))
+MIN_LENGTH = int(os.getenv("MIN_LENGTH", 500))
+MAX_RETRIES = int(os.getenv("MAX_RETRIES", 10))
+
 
 # === Шрифты для DOCX ===
 FONT = os.getenv("FONT", "Times New Roman")
