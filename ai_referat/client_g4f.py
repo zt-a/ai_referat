@@ -48,7 +48,6 @@ class AIClientSync(AIClientBase):
                         web_search=False
                     )
                     text = response.choices[0].message.content
-                    print(text)
                     # Если текст подходит, сразу возвращаем
                     if len(text) >= min_length:
                         return text
@@ -80,12 +79,6 @@ class AIClientAsync(AIClientBase):
                     )
                     text = response.choices[0].message.content
                     if len(text) >= min_length:
-                        print("_"*40)
-                        print(self.history)      
-                        print(":"*20)                  
-                        print(text)
-                        print("_"*40)
-                        
                         return text  # сразу возвращаем текст
                 except Exception as e:
                     if "Ratelimit" not in str(e):
