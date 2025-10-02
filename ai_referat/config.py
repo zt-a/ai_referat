@@ -19,6 +19,7 @@ FONT_SIZE = int(os.getenv("FONT_SIZE", 14))
 
 # === API ключи для AIClient ===
 AI_API_KEY = os.getenv("AI_API_KEY", "")
+AI_BASE_URL = os.getenv("AI_BASE_URL", "")
 AI_MODEL = os.getenv("AI_MODEL", "gpt-3.5-turbo")  # или другой
 
 # === Директории по умолчанию ===

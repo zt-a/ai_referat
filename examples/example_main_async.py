@@ -2,8 +2,15 @@
 import asyncio
 import os
 import time
+from ai_referat.client import AIClientAsync
 from ai_referat.pipeline import AIReferatManagerAsync
 from ai_referat.config import RESULTS_JSON_DIR, RESULTS_DOCX_DIR
+from ai_referat.config import (
+    AI_API_KEY,
+    AI_BASE_URL,
+    AI_MODEL
+)
+
 
 async def main():
     start_time = time.time()
@@ -23,6 +30,7 @@ async def main():
         city="Бишкек",
         json_path=json_path,
         docx_path=docx_path,
+        free=True
     )
 
     essay = await manager.generate_essay()

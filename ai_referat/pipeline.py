@@ -5,7 +5,8 @@ from tqdm.asyncio import tqdm as tqdm_async
 from tqdm import tqdm as tqdm_sync
 from pprint import pprint as pp
 
-from ai_referat.client import AIClientAsync, AIClientSync
+from ai_referat.client_v2 import AIClientAsync, AIClientSync
+from ai_referat.client import AIClientAsync as AIClientAsyncFree, AIClientSync as AIClientSyncFree
 from ai_referat.models import (
     Essay,
     Chapter,
@@ -29,6 +30,9 @@ from ai_referat.config import (
     MAX_CHARS_PER_PAGE as CFG_CHARS_PER_PAGE,
     FONT as CFG_FONT,
     FONT_SIZE as CFG_FONT_SIZE,
+    AI_API_KEY,
+    AI_BASE_URL,
+    AI_MODEL
 )
 
 # -------------------------------------------------------
@@ -54,10 +58,12 @@ class _BaseReferatManager:
         chars_per_page: int = CFG_CHARS_PER_PAGE,
         json_path: Optional[str] = None,
         docx_path: Optional[str] = None,
+        free: bool = True,
     ):
         self.topic = topic
         self.language = language
-
+        self.free = free
+        
         self.metadata = EssayMetadata(
             author=author,
             group=group,
@@ -125,7 +131,10 @@ class _BaseReferatManager:
 class AIReferatManagerAsync(_BaseReferatManager):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.client = AIClientAsync()
+        if self.free:
+            self.client = AIClientAsyncFree(AI_MODEL)
+        else:
+            self.client = AIClientAsync(AI_BASE_URL, AI_API_KEY, AI_MODEL)
 
     async def generate_plan(self):
         prompt = self.prompts.plan()
@@ -135,59 +144,87 @@ class AIReferatManagerAsync(_BaseReferatManager):
         return plan
 
     async def generate_content(self, plan):
+        """
+        Генерация введения, глав/подглав, заключения и литературы.
+        Подглавы и главы генерируются параллельно, но порядок всегда сохраняется.
+        """
+
+        # ----- Введение -----
         async def gen_intro():
-            text = await self.client.get_response_async(self.prompts.intro(), "")
+            text = await self.client.get_response_async(
+                content=self.prompts.intro(),
+                rules=""
+            )
             return Introduction(text=text)
 
+        # ----- Заключение -----
         async def gen_conclusion():
-            text = await self.client.get_response_async(self.prompts.conclusion(), "")
+            text = await self.client.get_response_async(
+                content=self.prompts.conclusion(),
+                rules=""
+            )
             return Conclusion(text=text)
 
+        # ----- Литература -----
         async def gen_references():
-            text = await self.client.get_response_async(self.prompts.references(), "")
+            text = await self.client.get_response_async(
+                content=self.prompts.references(),
+                rules=""
+            )
             items = [line.strip() for line in text.split("\n") if line.strip()]
             return References(items=items)
 
+        # ----- Генерация главы -----
         async def gen_chapter(plan_chapter):
+            # Текст главы
             chap_text = await self.client.get_response_async(
-                self.prompts.chapter(plan_chapter.title), ""
+                content=self.prompts.chapter(plan_chapter.title),
+                rules=""
             )
-            subchapters = []
+
+            # Тексты подглав
             if plan_chapter.subchapters:
-                sub_tasks = [
+                sub_texts = await asyncio.gather(*[
                     self.client.get_response_async(
-                        self.prompts.subchapter(plan_chapter.title, sub), ""
+                        content=self.prompts.subchapter(plan_chapter.title, sub),
+                        rules=""
                     )
                     for sub in plan_chapter.subchapters
-                ]
-                sub_results = []
-                for future in tqdm_async(asyncio.as_completed(sub_tasks),
-                                         total=len(sub_tasks),
-                                         desc=f"{plan_chapter.title} -> подглавы"):
-                    text = await future
-                    sub_results.append(text)
+                ])
                 subchapters = [
-                    Subchapter(title=sub, text=text)
-                    for sub, text in zip(plan_chapter.subchapters, sub_results)
+                    Subchapter(title=sub, text=sub_texts[i])
+                    for i, sub in enumerate(plan_chapter.subchapters)
                 ]
-            return Chapter(title=plan_chapter.title, text=chap_text, subchapters=subchapters)
+            else:
+                subchapters = []
 
-        chapter_tasks = [gen_chapter(ch) for ch in plan.chapters]
-        chapters = []
-        for i, chapter in enumerate(await asyncio.gather(*chapter_tasks)):
-            chapters.append(chapter)
-            tqdm_async.write(f"Глава {i + 1}/{len(plan.chapters)} готова: {chapter.title}")
+            return Chapter(
+                title=plan_chapter.title,
+                text=chap_text,
+                subchapters=subchapters
+            )
 
-        intro, conclusion, references = await asyncio.gather(
-            gen_intro(), gen_conclusion(), gen_references()
+        # ----- Все главы параллельно -----
+        chapters = await asyncio.gather(*[
+            gen_chapter(ch) for ch in plan.chapters
+        ])
+
+        # ----- Введение, заключение и литература параллельно -----
+        introduction, conclusion, references = await asyncio.gather(
+            gen_intro(),
+            gen_conclusion(),
+            gen_references(),
         )
-        return intro, chapters, conclusion, references
+
+        return introduction, chapters, conclusion, references
+
 
     async def generate_essay(self, json_path: Optional[str] = None, docx_path: Optional[str] = None):
         json_path = json_path or self.default_json_path
         docx_path = docx_path or self.default_docx_path
-
+        print("Generating Plan...")
         plan = await self.generate_plan()
+        print("Generated Plan!!!")
         intro, chapters, conclusion, references = await self.generate_content(plan)
 
         self.essay = Essay(
@@ -213,7 +250,10 @@ class AIReferatManagerAsync(_BaseReferatManager):
 class AIReferatManagerSync(_BaseReferatManager):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.client = AIClientSync()
+        if self.free:
+            self.client = AIClientSyncFree(AI_MODEL)
+        else:
+            self.client = AIClientSync(AI_BASE_URL, AI_API_KEY, AI_MODEL)
 
     def generate_plan(self):
         prompt = self.prompts.plan()
