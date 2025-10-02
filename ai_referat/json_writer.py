@@ -1,6 +1,8 @@
 import json
-from typing import Union, Optional
+from typing import Optional, Union
+
 from ai_referat.models import Essay
+
 
 def save_json(
     essay: Union[Essay, dict],

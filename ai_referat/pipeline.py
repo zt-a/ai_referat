@@ -1,36 +1,27 @@
 # ai_referat/pipeline.py
 import asyncio
-from typing import Optional
 from pprint import pprint as pp
+from typing import Optional
 
 from ai_referat.client import AIClientAsync, AIClientSync
-
-from ai_referat.models import (
-    Essay,
-    Chapter,
-    Subchapter,
-    Introduction,
-    Conclusion,
-    References,
-    EssayMetadata,
-)
-from ai_referat.parser import parse_plan
-from ai_referat.json_writer import save_json
+from ai_referat.config import FONT as CFG_FONT
+from ai_referat.config import FONT_SIZE as CFG_FONT_SIZE
+from ai_referat.config import LANGUAGE as CFG_LANGUAGE
+from ai_referat.config import MAX_CHAPTERS as CFG_MAX_CHAPTERS
+from ai_referat.config import MAX_CHARS_PER_PAGE as CFG_CHARS_PER_PAGE
+from ai_referat.config import MAX_PAGES as CFG_MAX_PAGES
+from ai_referat.config import MAX_RETRIES
+from ai_referat.config import MAX_SUBCHAPTERS as CFG_MAX_SUBCHAPTERS
+from ai_referat.config import MIN_LENGTH
+from ai_referat.config import MIN_PAGES as CFG_MIN_PAGES
 from ai_referat.docx_writer import create_docx_file
+from ai_referat.json_writer import save_json
+from ai_referat.models import (Chapter, Conclusion, Essay, EssayMetadata,
+                               Introduction, References, Subchapter)
+from ai_referat.parser import parse_plan
 from ai_referat.prompts import EssayPrompts
 from ai_referat.rules import RulesManager
-from ai_referat.config import (
-    LANGUAGE as CFG_LANGUAGE,
-    MIN_PAGES as CFG_MIN_PAGES,
-    MAX_PAGES as CFG_MAX_PAGES,
-    MAX_CHAPTERS as CFG_MAX_CHAPTERS,
-    MAX_SUBCHAPTERS as CFG_MAX_SUBCHAPTERS,
-    MAX_CHARS_PER_PAGE as CFG_CHARS_PER_PAGE,
-    FONT as CFG_FONT,
-    FONT_SIZE as CFG_FONT_SIZE,
-    MIN_LENGTH,
-    MAX_RETRIES
-)
+
 
 # -------------------------------------------------------
 # Базовый класс с общей логикой

@@ -1,6 +1,7 @@
 # ai_referat/config.py
-from dotenv import load_dotenv
 import os
+
+from dotenv import load_dotenv
 
 # Загружаем переменные из .env (если файл существует)
 load_dotenv()

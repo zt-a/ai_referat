@@ -1,10 +1,13 @@
 import json
 import re
-from typing import Optional, Dict, Any, Union
+from typing import Any, Dict, Optional, Union
+
 from docx import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_BREAK
 from docx.shared import Pt, RGBColor
-from ai_referat.models import Essay, Chapter, Subchapter
+
+from ai_referat.models import Essay
+
 
 def apply_markdown_formatting(text: str) -> str:
     """Простейшее применение Markdown стилей к тексту (жирный, заголовки)."""

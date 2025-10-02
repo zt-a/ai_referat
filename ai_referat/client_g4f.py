@@ -1,8 +1,10 @@
 # client_g4f.py
-from g4f import Provider
-from g4f.client import Client, AsyncClient
 import asyncio
 import time
+
+from g4f import Provider
+from g4f.client import AsyncClient, Client
+
 
 class AIClientBase:
     def __init__(self, model="gpt-4o-mini", api_key=None, base_url=None, free=True):

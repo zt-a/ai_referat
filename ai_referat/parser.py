@@ -1,6 +1,8 @@
 import re
 from typing import List, Optional
+
 from ai_referat.models import EssayPlan, PlanChapter
+
 
 def parse_plan(text: str) -> EssayPlan:
     """
