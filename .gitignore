@@ -5,3 +5,4 @@ note.md
 # Виртуальное окружение
 venv/
 results/
+dist/

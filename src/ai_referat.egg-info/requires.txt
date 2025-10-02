@@ -1,0 +1,7 @@
+g4f
+aiohttp
+httpx
+pydantic
+openai
+python-docx
+python-dotenv

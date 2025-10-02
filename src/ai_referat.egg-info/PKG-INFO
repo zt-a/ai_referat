@@ -1,0 +1,15 @@
+Metadata-Version: 2.4
+Name: ai_referat
+Version: 0.1.0
+Summary: Генератор рефератов на основе AI
+Author-email: Zhyrgalbek Tagaibekov <zt20061113@gmail.com>
+License: MIT
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: g4f
+Requires-Dist: aiohttp
+Requires-Dist: httpx
+Requires-Dist: pydantic
+Requires-Dist: openai
+Requires-Dist: python-docx
+Requires-Dist: python-dotenv
